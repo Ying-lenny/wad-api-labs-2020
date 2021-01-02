@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import moviesRouter from './api/movies';
 import './db';
 import usersRouter from './api/users';
-import {loadUsers} from './seedData'
+import {loadUsers, loadMovies} from './seedData';
 
 import genresRouter from './api/genres';
 
@@ -39,7 +39,7 @@ app.use(session({
 }));
 
 // initialise passport​
-app.use(passport.initialize())
+app.use(passport.initialize());
 
 // Add passport.authenticate(..)  to middleware stack for protected routes​
 app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
@@ -56,4 +56,5 @@ app.listen(port, () => {
 
 if (process.env.SEED_DB) {
   loadUsers();
+  loadMovies();
 }
