@@ -57,15 +57,20 @@ router.put('/:id',  (req, res, next) => {
     .then(user => res.json(200, user)).catch(next);
 });
 
-//Add a favourite. No Error Handling Yet. Can add duplicates too!
+//Add a favourite. Can add duplicates too!
 router.post('/:userName/favourites', async (req, res, next) => {
   const newFavourite = req.body.id;
   const userName = req.params.userName;
-  const movie = await movieModel.findByMovieDBId(newFavourite);
-  const user = await User.findByUserName(userName);
-  await user.favourites.push(movie._id);
-  await user.save(); 
-  res.status(201).json(user); 
+  try {
+    const movie = await movieModel.findByMovieDBId(newFavourite);
+    const user = await User.findByUserName(userName);
+    await user.favourites.push(movie._id);
+    await user.save(); 
+    res.status(201).json(user); 
+  } catch (err) {
+    res.status(500).send(`Hey!! You entered an incorrect ID!!! 👍👍 `)
+    .catch((error) => next(error));
+  }
 });
 
 router.get('/:userName/favourites', (req, res, next) => {
